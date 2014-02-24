@@ -1,3 +1,5 @@
+import java.util.Map;
+
 import models.Cadeira;
 import models.Periodo;
 import models.PlanoDeCurso;
@@ -173,5 +175,28 @@ public class PlanoDeCursoTest {
 			Assert.assertEquals("Pre Requisito: Cálculo II não concluido",
 					e.getMessage());
 		}
+	}
+	
+	@Test
+	public void testaGetPeriodoCadeira(){
+		PlanoDeCurso pc = new PlanoDeCurso();
+		Map<String, Cadeira> mapa = pc.mapaDeCadeiras;
+		
+		Cadeira eda = mapa.get("Estrutura de Dados");
+		Cadeira p1 = mapa.get("Programação I");
+		Cadeira metodos = mapa.get("Métodos Estatísticos");
+		Cadeira logica = mapa.get("Lógica Matemática");
+		Cadeira ia = mapa.get("Inteligência Artificial I");
+		
+		Assert.assertEquals(3, eda.getPeriodo());
+		Assert.assertEquals(1, p1.getPeriodo());
+		Assert.assertEquals(4, metodos.getPeriodo());
+		Assert.assertEquals(4, logica.getPeriodo());
+		Assert.assertEquals(6, ia.getPeriodo());
+		
+		for(Cadeira c : pc.mapaDeCadeiras.values()){
+			System.out.println(c.getNome());
+		}
+
 	}
 }

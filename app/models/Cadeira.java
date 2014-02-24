@@ -16,6 +16,7 @@ public class Cadeira implements Comparable<Cadeira>{
 	private String nome;
 	private int creditos;
 	private List<Cadeira> preRequisitos;
+	private int periodo;
 	private int dificuldade; // dificuldade de 1 - 10
 
 	// Construtor Default
@@ -57,6 +58,14 @@ public class Cadeira implements Comparable<Cadeira>{
 
 	public List<Cadeira> getPreRequisitos() {
 		return preRequisitos;
+	}
+	
+	public int getPeriodo(){
+		return this.periodo;
+	}
+	
+	public void setPeriodo(int periodo){
+		this.periodo = periodo;
 	}
 
 	// TODO PADRÃO DE PROJETO: INFORMATION EXPERT - a classe cadeira é a

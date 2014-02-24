@@ -56,20 +56,20 @@ public class GerenciadorDeCadeiras {
 		Element cadeiraXml = (Element) nNode;
 		String idCadeira = cadeiraXml.getAttribute("id");
 		String nomeCadeira = cadeiraXml.getAttribute("nome");
-		criandoCadeira.setNome(nomeCadeira);
-		int dificuldade = Integer.parseInt(cadeiraXml
-				.getElementsByTagName("dificuldade").item(0).getTextContent());
-		criandoCadeira.setDificuldade(dificuldade);
-		int creditos = Integer.parseInt(cadeiraXml
-				.getElementsByTagName("creditos").item(0).getTextContent());
-		criandoCadeira.setCreditos(creditos);
-		int periodo = Integer.parseInt(cadeiraXml
-				.getElementsByTagName("periodo").item(0).getTextContent());
+		int dificuldade = Integer.parseInt(cadeiraXml.getElementsByTagName("dificuldade").item(0).getTextContent());
+		int creditos = Integer.parseInt(cadeiraXml.getElementsByTagName("creditos").item(0).getTextContent());
+		int periodo = Integer.parseInt(cadeiraXml.getElementsByTagName("periodo").item(0).getTextContent());
+		criandoCadeira.setPeriodo(periodo); //ADD PERIODO
 		NodeList requisitos = cadeiraXml.getElementsByTagName("id");
+		
+		//SETANDO OS ATRIBUTOS DA CADEIRA
+		criandoCadeira.setCreditos(creditos);
+		criandoCadeira.setDificuldade(dificuldade);
+		criandoCadeira.setNome(nomeCadeira);
 		for (int i = 0; i < requisitos.getLength(); i++) {
-			criandoCadeira.addPreRequisito(cadeirasPorId.get(requisitos.item(i)
-					.getTextContent()));
+			criandoCadeira.addPreRequisito(cadeirasPorId.get(requisitos.item(i).getTextContent()));
 		}
+		
 		cadeirasPorId.put(idCadeira, criandoCadeira);
 		if (periodo == PlanoDeCurso.PRIMEIRO_PERIODO) {
 			cadeiraPrimeiro.put(criandoCadeira.getNome(), criandoCadeira);
@@ -90,7 +90,7 @@ public class GerenciadorDeCadeiras {
 		doc.getDocumentElement().normalize();
 		return doc;
 	}
-
+	
 	public static Map<String, Cadeira> getCadeirasPrimeiro() {
 		if (listaDeCadeiras.isEmpty()) {
 			populaMapas();

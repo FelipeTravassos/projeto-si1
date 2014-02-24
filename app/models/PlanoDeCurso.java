@@ -20,19 +20,43 @@ public class PlanoDeCurso {
 	private List<Periodo> periodos;
 	public Map<String, Cadeira> mapaDeCadeiras;
 	public static final int PRIMEIRO_PERIODO = 1;
+	public static final int NUMERO_DE_PERIODOS = 10;
 	public static final int MAXIMO_CREDITOS = 28;
 
 	public PlanoDeCurso() {
 		// TODO Responsabilidade Atribuita seguindo o padrão Creator
 		// O plano de curso ficou responsável por criar os períodos.
+		
+		//CRIA TODOS OS PERIODOS (ESTAO VAZIOS)
 		this.periodos = new ArrayList<Periodo>();
-		this.periodos.add(new Periodo(PRIMEIRO_PERIODO));
-		this.mapaDeCadeiras = GerenciadorDeCadeiras.getMapaDeCadeiras();
-		for (int i = 2; i <= 10; i++){
+		for (int i = PRIMEIRO_PERIODO; i<= NUMERO_DE_PERIODOS ; i++ ){
 			periodos.add(new Periodo(i));
 		}
+		
+		// seta o mapa de cadeiras com as cadeiras do xml
+		this.mapaDeCadeiras = GerenciadorDeCadeiras.getMapaDeCadeiras();
+
+		//irá distribuir as cadeiras entre os periodos
+		alocarTodasDiscplinas(); 
+		
+		
+		
 	}
 
+	/**
+	 * Aloca todas as disciplinas ofertadas nos seus respectivos períodos.
+	 */
+	public void alocarTodasDiscplinas(){
+		for(Cadeira c: mapaDeCadeiras.values()){
+			Periodo p = getPeriodo(c.getPeriodo());
+			try {
+				p.addCadeira(c);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}
+	}
+	
 	/**
 	 * Adiciona um periodo à lista de períodos, de acordo com o tamanho da
 	 * lista.

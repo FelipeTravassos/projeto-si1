@@ -1,0 +1,72 @@
+@(plano: PlanoDeCurso)
+
+@import helper._
+
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script type='text/javascript' src="@routes.Assets.at("javascripts/funcoes.js")"></script>
+<link rel="stylesheet" href="@routes.Assets.at("stylesheets/main.css")">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+<body style='background-image:url(@routes.Assets.at("images/bg-1.jpg"));'>
+@main("Plano de Curso") {
+	<center><h2>@Messages("planoDeCurso")</h2></center>
+	
+	<!-- BOTAO ADD PERIODO 
+    <span id="addPeriodo">
+		<a href="/addPeriodo">@Messages("addPeriodo")</a>
+	</span>
+	 -->
+	<h3 style="position:absolute;left:60%;top:50px;">Períodos Do Curso</h3>
+	<div id="periodos">
+	@for(periodo <- plano.getPeriodos()) {
+		<div id="@periodo.getNumero()" class="periodo" ondrop="drop(event, this)"
+			ondragover="allowDrop(event,this)" ondragleave="leave(event, this)">
+		<!--  BOTAO FECHAR DO PERIODO 
+		@if(periodo.getNumero() != 1) {
+			<span><a class="close" href="remPeriodo/@periodo.getNumero()">X</a></span>
+		}
+		 -->
+		
+		
+		<ul style="list-style:none;">
+			<span class="label label-info" style="width:190px;height:30px;font-size:20px;margin-bottom:10px;margin-left:-40px;">@periodo.getNumero() @Messages("nPeriodo") </span>
+			@for(cadeira <- periodo.getCadeiras()) {
+			
+		  	<div class="alocadas" id="@cadeira.getNome()" title="remover" onclick="remCadeira('@cadeira.getNome()', '@plano.isPreRequisito(cadeira.getNome())')">
+		  		<center><label class="nome"> <span>@cadeira.getNome()</span></label></center>
+		  		<label class="creditos">@cadeira.getCreditos() @Messages("creditos")</label>
+		  		<label class="dificuldade"> dificuldade: @cadeira.getDificuldade()</label>
+		  		<span style="margin-top: 20px;" ></span>	
+		  	</div>
+		} 
+		</ul>
+		<span class="periodoCreditos">@periodo.getCreditos() @Messages("creditos")</span>
+		<span class="periodoDificuldade">Dificuldade: @periodo.getDificuldadeTotal()</span>
+		</div>
+	}
+	</div>
+	<h5 style="float:right;position:absolute;top:630px;left:760px;margin:0;color:#600;">
+		Clique sobre uma cadeira para removê-la.
+	</h5>
+	
+	<br/>
+	<center><div class="separator"> </div> </center>
+	
+	<h3 style="float:left;position:relative;left:50px;">@Messages("cadeirasDisponiveis")</h3>
+	<h5 style="float:right;position:absolute;top:630px;left:60px;margin:0;color:#600;">
+		Arraste a cadeira para o período que você quer alocá-la
+	</h5>
+	<div style="width:35%;height:500px;overflow-y:auto;margin-top:20px;margin-left:30px;">
+	<ul style="list-style:none;overflow-y:auto;margin-top:20px;"> 
+		@for(cadeira <- plano.getCadeiraDispniveisOrdenadas()) {
+		<div class="disponiveis" id="@cadeira.getNome()"	draggable="true" 
+		ondragstart="drag(event)" ondragend="dragEnd()">
+	  		<center><label class="nome">@cadeira.getNome()</label></center>
+		  	<label class="creditos">@cadeira.getCreditos() @Messages("creditos")</label>
+		  	<label class="dificuldade"> dificuldade: @cadeira.getDificuldade()</label>
+	  	</div>
+	} 
+	</ul>
+	</div>	
+}
+</body>

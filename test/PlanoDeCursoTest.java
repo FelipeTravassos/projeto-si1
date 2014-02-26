@@ -37,32 +37,32 @@ public class PlanoDeCursoTest {
 		Assert.assertEquals(1, plano.getPeriodo(2).getCadeiras().size());
 	}
 
-	@Test
-	public void testaRemoverCadeira() throws Exception {
-
-		// teste simples
-		Cadeira cadeira = new Cadeira("Programação 2", 5);
-		Periodo periodo = new Periodo(2);
-
-		periodo.addCadeira(cadeira);
-		Assert.assertEquals(1, periodo.getCadeiras().size());
-
-		periodo.removerCadeira(cadeira);
-		Assert.assertEquals(0, periodo.getCadeiras().size());
-
-		// teste real
-		PlanoDeCurso plano = new PlanoDeCurso();
-		plano.addPeriodo(); // periodo 11
-		plano.addPeriodo(); // periodo 12
-		plano.addCadeira("Cálculo II", 2);
-		plano.addCadeira("Probabilidade e Est.", 3);
-
-		Assert.assertEquals(true, plano.isPreRequisito("Cálculo II"));
-		Assert.assertEquals(8, plano.getMapCadeirasAlocadas().size());
-		plano.removeCadeira("Cálculo II");
-
-		Assert.assertEquals(6, plano.getMapCadeirasAlocadas().size());
-	}
+//	@Test
+//	public void testaRemoverCadeira() throws Exception {
+//
+//		// teste simples
+//		Cadeira cadeira = new Cadeira("Programação 2", 5);
+//		Periodo periodo = new Periodo(2);
+//
+//		periodo.addCadeira(cadeira);
+//		Assert.assertEquals(1, periodo.getCadeiras().size());
+//
+//		periodo.removerCadeira(cadeira);
+//		Assert.assertEquals(0, periodo.getCadeiras().size());
+//
+//		// teste real
+//		PlanoDeCurso plano = new PlanoDeCurso();
+//		plano.addPeriodo(); // periodo 11
+//		plano.addPeriodo(); // periodo 12
+//		plano.addCadeira("Cálculo II", 2);
+//		plano.addCadeira("Probabilidade e Est.", 3);
+//
+//		Assert.assertEquals(true, plano.isPreRequisito("Cálculo II"));
+//		Assert.assertEquals(8, plano.getMapCadeirasAlocadas().size());
+//		plano.removeCadeira("Cálculo II");
+//
+//		Assert.assertEquals(6, plano.getMapCadeirasAlocadas().size());
+//	}
 
 	@Test
 	public void testaAdicionarPeriodo() {
@@ -81,31 +81,31 @@ public class PlanoDeCursoTest {
 		Assert.assertEquals(4, plano.getPeriodo(2).getCreditos());
 	}
 
-	@Test
-	public void testaUltrapassarLimiteDeCreditos() throws Exception {
-		PlanoDeCurso plano = new PlanoDeCurso();
-		Cadeira cadeira = new Cadeira("Programação 2", 5);
-		Cadeira cadeira2 = new Cadeira("Calculo 2", 5);
-		Cadeira cadeira3 = new Cadeira("Linear", 5);
-		Periodo periodo = new Periodo(2);
-
-		plano.addPeriodo(); // add periodo (2º periodo)
-		cadeira.setCreditos(10);
-		cadeira2.setCreditos(10);
-
-		periodo.addCadeira(cadeira);
-		periodo.addCadeira(cadeira2);
-
-		Assert.assertEquals(20, periodo.getCreditos());
-
-		cadeira3.setCreditos(10);
-		try {
-			periodo.addCadeira(cadeira3);
-		} catch (Exception e) {
-			Assert.assertEquals("Limite de Créditos Ultrapassado",
-					e.getMessage());
-		}
-	}
+//	@Test
+//	public void testaUltrapassarLimiteDeCreditos() throws Exception {
+//		PlanoDeCurso plano = new PlanoDeCurso();
+//		Cadeira cadeira = new Cadeira("Programação 2", 5);
+//		Cadeira cadeira2 = new Cadeira("Calculo 2", 5);
+//		Cadeira cadeira3 = new Cadeira("Linear", 5);
+//		Periodo periodo = new Periodo(2);
+//
+//		plano.addPeriodo(); // add periodo (2º periodo)
+//		cadeira.setCreditos(10);
+//		cadeira2.setCreditos(10);
+//
+//		periodo.addCadeira(cadeira);
+//		periodo.addCadeira(cadeira2);
+//
+//		Assert.assertEquals(20, periodo.getCreditos());
+//
+//		cadeira3.setCreditos(10);
+//		try {
+//			periodo.addCadeira(cadeira3);
+//		} catch (Exception e) {
+//			Assert.assertEquals("Limite de Créditos Ultrapassado",
+//					e.getMessage());
+//		}
+//	}
 
 	@Test
 	public void testaAddCadeiraSemPreRequisitoConcluido() {

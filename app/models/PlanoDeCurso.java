@@ -6,26 +6,45 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.transaction.NotSupportedException;
 
+import play.db.ebean.Model;
 import managers.GerenciadorDeCadeiras;
 
 /**
  * Entidade que representa o Plano de Curso do sistema.
  */
-public class PlanoDeCurso {
+@Entity //É UMA ENTIDADE DO BANCO DE DADOS
+public class PlanoDeCurso extends Model{
 
-	// TODO PADRÃO DE PROJETO: ALTA COESÃO - so haverá informações coerentes com
-	// a classe
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id 											//TODA ENTIDADE TEM QUE TER SUA ID
+	@GeneratedValue(strategy = GenerationType.AUTO) //VALOR DA ID GERADO AUTOMATICAMENTE
+	private Long id;
+	
+	/* 
+	 * PADRÃO DE PROJETO: ALTA COESÃO - so haverá informações coerentes com
+	 * a classe 
+	 */
 	private List<Periodo> periodos;
 	public Map<String, Cadeira> mapaDeCadeiras;
 	public static final int PRIMEIRO_PERIODO = 1;
 	public static final int NUMERO_DE_PERIODOS = 10;
 	public static final int MAXIMO_CREDITOS = 28;
 
-	public PlanoDeCurso() {
-		// TODO Responsabilidade Atribuita seguindo o padrão Creator
-		// O plano de curso ficou responsável por criar os períodos.
+	public PlanoDeCurso() { 
+		/* 
+		 * Responsabilidade Atribuita seguindo o padrão Creator
+		 * O plano de curso ficou responsável por criar os períodos.
+		 */
 		
 		//CRIA TODOS OS PERIODOS (ESTAO VAZIOS)
 		this.periodos = new ArrayList<Periodo>();
@@ -36,11 +55,8 @@ public class PlanoDeCurso {
 		// seta o mapa de cadeiras com as cadeiras do xml
 		this.mapaDeCadeiras = GerenciadorDeCadeiras.getMapaDeCadeiras();
 
-		//irá distribuir as cadeiras entre os periodos
-		alocarTodasDiscplinas(); 
-		
-		
-		
+		//aloca as disciplinas nos seus períodos respectivos
+		//alocarTodasDiscplinas(); 	
 	}
 
 	/**
@@ -51,6 +67,7 @@ public class PlanoDeCurso {
 			Periodo p = getPeriodo(c.getPeriodo());
 			try {
 				p.addCadeira(c);
+				c.setPlano(this);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}	
@@ -123,8 +140,11 @@ public class PlanoDeCurso {
 	 * @throws Exception
 	 */
 	public void addCadeira(String cadeiraNome, int periodo) throws Exception {
-		// TODO PADRÃO DE PROJETO: CONTROLLER - para manter o baixo acoplamento
-		// essa classe vai ser a responsável por adicionar um cadeira ao periodo
+		/*
+		 * PADRÃO DE PROJETO: CONTROLLER - para manter o baixo acoplamento
+		 * essa classe vai ser a responsável por adicionar um cadeira ao periodo
+		 */
+
 		Cadeira cadeira = mapaDeCadeiras.get(cadeiraNome);
 		if (periodo == PRIMEIRO_PERIODO) {
 			throw new IllegalArgumentException(
@@ -174,8 +194,10 @@ public class PlanoDeCurso {
 	}
 
 	public void removeCadeira(String cadeira) throws Exception {
-		// TODO PADRÃO DE PROJETO: CONTROLLER - para manter o baixo acoplamento
-		// essa classe vai ser a responsável por remover uma cadeira ao periodo
+		/*
+		 * PADRÃO DE PROJETO: CONTROLLER - para manter o baixo acoplamento
+		 * essa classe vai ser a responsável por remover uma cadeira ao periodo
+		 */
 		if (getMapCadeirasAlocadas().get(cadeira) == null) {
 			throw new Exception("Essa Cadeira não está alocada!");
 		} else if (GerenciadorDeCadeiras.getCadeirasPrimeiro().get(cadeira) != null) {
@@ -216,5 +238,4 @@ public class PlanoDeCurso {
 		}
 		return false;
 	}
-
 }

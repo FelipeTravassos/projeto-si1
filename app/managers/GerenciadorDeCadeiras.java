@@ -23,13 +23,20 @@ import org.xml.sax.SAXException;
  */
 public class GerenciadorDeCadeiras {
 
-	// TODO PADRÃO DE PROJETO: CREATOR - Um gerenciador de cadeiras precisa do
-	// mapas de cadeiras contendo todas as cadeiras do curso
+	/* 
+	 * PADRÃO DE PROJETO: CREATOR - Um gerenciador de cadeiras precisa do
+	 * mapas de cadeiras contendo todas as cadeiras do curso
+	 */
 	private static Map<String, Cadeira> listaDeCadeiras = new HashMap<String, Cadeira>();
 	private static Map<String, Cadeira> cadeiraPrimeiro = new HashMap<String, Cadeira>();
 
-	// TODO PADRÃO DE PROJETO: CONTROLLER - essa classe é responsável por
-	// controlar a adição de cadeiras no mapa.
+	/*
+	 * PADRÃO DE PROJETO: CONTROLLER - essa classe é responsável por
+	 * controlar a adição de cadeiras no mapa.
+	 */
+	/**
+	 * 
+	 */
 	private static void populaMapas() {
 		Map<String, Cadeira> cadeirasPorId = new HashMap<String, Cadeira>();
 		try {
@@ -59,13 +66,13 @@ public class GerenciadorDeCadeiras {
 		int dificuldade = Integer.parseInt(cadeiraXml.getElementsByTagName("dificuldade").item(0).getTextContent());
 		int creditos = Integer.parseInt(cadeiraXml.getElementsByTagName("creditos").item(0).getTextContent());
 		int periodo = Integer.parseInt(cadeiraXml.getElementsByTagName("periodo").item(0).getTextContent());
-		criandoCadeira.setPeriodo(periodo); //ADD PERIODO
 		NodeList requisitos = cadeiraXml.getElementsByTagName("id");
 		
 		//SETANDO OS ATRIBUTOS DA CADEIRA
 		criandoCadeira.setCreditos(creditos);
 		criandoCadeira.setDificuldade(dificuldade);
 		criandoCadeira.setNome(nomeCadeira);
+		criandoCadeira.setPeriodo(periodo);
 		for (int i = 0; i < requisitos.getLength(); i++) {
 			criandoCadeira.addPreRequisito(cadeirasPorId.get(requisitos.item(i).getTextContent()));
 		}

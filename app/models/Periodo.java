@@ -51,11 +51,11 @@ public class Periodo {
 	}
 
 	public int getDificuldadeTotal() {
-		int difi = 0;
+		int dificuldade = 0;
 		for (Cadeira c : getCadeiras()) {
-			difi += c.getDificuldade();
+			dificuldade += c.getDificuldade();
 		}
-		return difi;
+		return dificuldade;
 	}
 
 	/**

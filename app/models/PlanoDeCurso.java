@@ -6,40 +6,46 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.transaction.NotSupportedException;
 
-import play.db.ebean.Model;
 import managers.GerenciadorDeCadeiras;
+import play.db.ebean.Model;
 
 /**
  * Entidade que representa o Plano de Curso do sistema.
  */
 @Entity //É UMA ENTIDADE DO BANCO DE DADOS
 public class PlanoDeCurso extends Model{
+	public static final int PRIMEIRO_PERIODO = 1;
+	public static final int NUMERO_DE_PERIODOS = 10;
+	public static final int MAXIMO_CREDITOS = 28;
 
-	/**
-	 * 
-	 */
+	public static Finder<Long,PlanoDeCurso> find = new Finder<Long,PlanoDeCurso>(
+		    Long.class, PlanoDeCurso.class);
 	private static final long serialVersionUID = 1L;
 
 	@Id 											//TODA ENTIDADE TEM QUE TER SUA ID
 	@GeneratedValue(strategy = GenerationType.AUTO) //VALOR DA ID GERADO AUTOMATICAMENTE
-	private Long id;
+	Long id;
 	
 	/* 
 	 * PADRÃO DE PROJETO: ALTA COESÃO - so haverá informações coerentes com
 	 * a classe 
 	 */
+	@ManyToMany(cascade=CascadeType.ALL)
+	@JoinTable(name = "plano_periodo", joinColumns = {@JoinColumn (name = "fk_plano")}, inverseJoinColumns = {@JoinColumn(name = "fk_periodo")})
 	private List<Periodo> periodos;
+	
 	public Map<String, Cadeira> mapaDeCadeiras;
-	public static final int PRIMEIRO_PERIODO = 1;
-	public static final int NUMERO_DE_PERIODOS = 10;
-	public static final int MAXIMO_CREDITOS = 28;
-
+	
 	public PlanoDeCurso() { 
 		/* 
 		 * Responsabilidade Atribuita seguindo o padrão Creator
@@ -54,24 +60,33 @@ public class PlanoDeCurso extends Model{
 		
 		// seta o mapa de cadeiras com as cadeiras do xml
 		this.mapaDeCadeiras = GerenciadorDeCadeiras.getMapaDeCadeiras();
-
-		//aloca as disciplinas nos seus períodos respectivos
-		//alocarTodasDiscplinas(); 	
+		this.distribuiCadeiras();  
 	}
 
 	/**
-	 * Aloca todas as disciplinas ofertadas nos seus respectivos períodos.
+	 * Distribui as cadeiras recém-retiradas do xml e adiciona em seus
+	 * respectivos períodos
 	 */
-	public void alocarTodasDiscplinas(){
+	public void distribuiCadeiras(){
 		for(Cadeira c: mapaDeCadeiras.values()){
-			Periodo p = getPeriodo(c.getPeriodo());
-			try {
+			if(c.getPeriodo() != 0) {
+				Periodo p = getPeriodo(c.getPeriodo());
+				try{
 				p.addCadeira(c);
-				c.setPlano(this);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}	
+				}catch(Exception e){
+					e.getMessage();
+				}
+			}
 		}
+	}
+
+	public void distribuiCadeiras(List<Cadeira> cadeiras){
+		Map<String, Cadeira> mapa = new HashMap<String, Cadeira>();
+		for(Cadeira c: cadeiras){
+			mapa.put(c.getNome(), c);
+		}
+		mapaDeCadeiras = mapa;
+		distribuiCadeiras();
 	}
 	
 	/**
@@ -237,5 +252,26 @@ public class PlanoDeCurso extends Model{
 			}
 		}
 		return false;
+	}
+	
+	public long getId(){
+		return this.id;
+	}
+	
+	public void setId(long id){
+		this.id = id;
+	}
+	
+	public static void create(PlanoDeCurso plano) {
+		plano.save();
+	}
+
+	public static void delete(Long id) {
+		find.ref(id).delete();
+	}
+
+	public static void atualizar(Long id) {
+		PlanoDeCurso plano = find.ref(id);
+		plano.update();
 	}
 }

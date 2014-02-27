@@ -9,15 +9,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
-
-
-
-
-
 
 import com.google.common.base.Objects;
 
@@ -25,51 +23,42 @@ import com.google.common.base.Objects;
  * Entidade que representa uma Cadeira.
  */
 @Entity //É UMA ENTIDADE DO BANCO DE DADOS
+@Table(name = "Cadeiras_do_Curso") //Nome da minha tabela
 public class Cadeira extends Model implements Comparable<Cadeira>{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	/* 
 	 * PADRÃO DE PROJETO: ALTA COESÃO - so haverá informações coerentes com
 	 * a classe
 	 */
+
+	public static Finder<Long,Cadeira> find = new Finder<Long,Cadeira>(Long.class, Cadeira.class); 
+	private static final long serialVersionUID = 1L;
 	
 	@Id 											//TODA ENTIDADE TEM QUE TER SUA ID
 	@GeneratedValue(strategy = GenerationType.AUTO) //VALOR DA ID GERADO AUTOMATICAMENTE
-	private int id;
+	long id;
 	
 	@Constraints.Required
-	@Column(nullable=false)
+	@Column(name = "Nome_da_Disciplina")
 	private String nome;
 	
+	@Column(name = "Qt_de_Creditos")
 	private int creditos;
 	
-//	@ManyToMany(cascade=CascadeType.ALL)
+	@ManyToMany(cascade=CascadeType.ALL) //vai salvando todas suas dependencias
+	@JoinTable(name = "cadeira_requisito", joinColumns = {@JoinColumn (name = "fk_cadeira")}, inverseJoinColumns = {@JoinColumn(name = "fk_requisito")})
 	private List<Cadeira> preRequisitos;
 	
+	@Column(name = "Periodo_da_Disciplina")
 	private int periodo;
-	private int dificuldade; // dificuldade de 1 - 10
-	private PlanoDeCurso plano;
 	
-	// Construtor Default
+	@Column(name = "Dificuldade_da_Disciplina")
+	private int dificuldade; // dificuldade de 1 - 10
+		
+	// Construtor
 	public Cadeira() {
 		setPreRequisitos(new ArrayList<Cadeira>());
 	}
-
-//	public Cadeira(String nome, int dificuldade) {
-//		this.setNome(nome);
-//		this.creditos = 4;
-//		this.dificuldade = dificuldade;
-//		setPreRequisitos(new ArrayList<Cadeira>());
-//	}
-//
-//	public Cadeira(String nome, int dificuldade, int creditos) {
-//		this(nome, dificuldade);
-//		this.creditos = creditos;
-//	}
 
 	public void setCreditos(int creditos) {
 		this.creditos = creditos;
@@ -148,11 +137,11 @@ public class Cadeira extends Model implements Comparable<Cadeira>{
 		this.nome = nome;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -165,11 +154,16 @@ public class Cadeira extends Model implements Comparable<Cadeira>{
 		return getNome().compareTo(c.getNome());
 	}
 	
-	public PlanoDeCurso getPlano() {
-		return plano;
+	public static void create(Cadeira cadeira) {
+		cadeira.save();
 	}
 
-	public void setPlano(PlanoDeCurso plano) {
-		this.plano = plano;
+	public static void delete(Long id) {
+		find.ref(id).delete();
+	}
+
+	public static void atualizar(Long id) {
+		Cadeira cadeira = find.ref(id);
+		cadeira.update();
 	}
 }

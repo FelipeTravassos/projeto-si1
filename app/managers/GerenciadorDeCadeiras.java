@@ -2,7 +2,9 @@ package managers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -29,7 +31,7 @@ public class GerenciadorDeCadeiras {
 	 */
 	private static Map<String, Cadeira> listaDeCadeiras = new HashMap<String, Cadeira>();
 	private static Map<String, Cadeira> cadeiraPrimeiro = new HashMap<String, Cadeira>();
-
+	private static List<Cadeira> listaCadeira = new ArrayList<Cadeira>();
 	/*
 	 * PADRÃO DE PROJETO: CONTROLLER - essa classe é responsável por
 	 * controlar a adição de cadeiras no mapa.
@@ -111,4 +113,14 @@ public class GerenciadorDeCadeiras {
 		}
 		return listaDeCadeiras;
 	}
+	
+	public static List<Cadeira> getListaCadeiras(){
+		if(listaCadeira.isEmpty()){
+			for(Cadeira c : getMapaDeCadeiras().values())
+				listaCadeira.add(c);
+		}
+		return listaCadeira;
+	}
+	
+	
 }

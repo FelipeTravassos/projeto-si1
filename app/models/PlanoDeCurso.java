@@ -27,6 +27,7 @@ public class PlanoDeCurso extends Model{
 	public static final int PRIMEIRO_PERIODO = 1;
 	public static final int NUMERO_DE_PERIODOS = 10;
 	public static final int MAXIMO_CREDITOS = 28;
+	
 
 	public static Finder<Long,PlanoDeCurso> find = new Finder<Long,PlanoDeCurso>(
 		    Long.class, PlanoDeCurso.class);
@@ -45,7 +46,7 @@ public class PlanoDeCurso extends Model{
 	private List<Periodo> periodos;
 	
 	public Map<String, Cadeira> mapaDeCadeiras;
-	
+	public List<String> listaOptativa;
 	public PlanoDeCurso() { 
 		/* 
 		 * Responsabilidade Atribuita seguindo o padrão Creator
@@ -58,25 +59,36 @@ public class PlanoDeCurso extends Model{
 			periodos.add(new Periodo(i));
 		}
 		
+		naoPermiteAlocarDisciplinasOptativas();
 		// seta o mapa de cadeiras com as cadeiras do xml
 		this.mapaDeCadeiras = GerenciadorDeCadeiras.getMapaDeCadeiras();
 		this.distribuiCadeiras();  
 	}
-
+	
 	/**
-	 * Distribui as cadeiras recém-retiradas do xml e adiciona em seus
-	 * respectivos períodos
+	 * Método que não coloca nenhum disciplina que seja optativa na grade
 	 */
+	private void naoPermiteAlocarDisciplinasOptativas(){
+		List<String> lista = new ArrayList<String>();
+		for(int i = 1; i < 12; i ++){
+			lista.add("Optativa " + i);
+		}
+		this.listaOptativa = lista;
+	}
+	
+
 	public void distribuiCadeiras(){
 		for(Cadeira c: mapaDeCadeiras.values()){
-			if(c.getPeriodo() != 0) {
 				Periodo p = getPeriodo(c.getPeriodo());
 				try{
 				p.addCadeira(c);
+				
+				if(listaOptativa.contains(c.getNome())) {
+					p.removerCadeira(c); //DESALOCA DISCIPLINAS OPTATIVAS
+				}
 				}catch(Exception e){
 					e.getMessage();
 				}
-			}
 		}
 	}
 

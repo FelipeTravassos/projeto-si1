@@ -37,7 +37,7 @@ public class GerenciadorDeCadeiras {
 	 * controlar a adição de cadeiras no mapa.
 	 */
 	/**
-	 * 
+	 * Preenche mapa com String nomeDaCadeira mapeada ao Objeto Cadeira
 	 */
 	private static void populaMapas() {
 		Map<String, Cadeira> cadeirasPorId = new HashMap<String, Cadeira>();
@@ -100,6 +100,10 @@ public class GerenciadorDeCadeiras {
 		return doc;
 	}
 	
+	/**
+	 * 
+	 * @return mapa com cadeiras do primeiro periodo
+	 */
 	public static Map<String, Cadeira> getCadeirasPrimeiro() {
 		if (listaDeCadeiras.isEmpty()) {
 			populaMapas();
@@ -107,6 +111,10 @@ public class GerenciadorDeCadeiras {
 		return cadeiraPrimeiro;
 	}
 
+	/**
+	 * 
+	 * @return mapa com todas cadeiras
+	 */
 	public static Map<String, Cadeira> getMapaDeCadeiras() {
 		if (listaDeCadeiras.isEmpty()) {
 			populaMapas();
@@ -114,6 +122,10 @@ public class GerenciadorDeCadeiras {
 		return listaDeCadeiras;
 	}
 	
+	/**
+	 * 
+	 * @return uma lista com todas as cadeiras
+	 */
 	public static List<Cadeira> getListaCadeiras(){
 		if(listaCadeira.isEmpty()){
 			for(Cadeira c : getMapaDeCadeiras().values())
@@ -121,6 +133,4 @@ public class GerenciadorDeCadeiras {
 		}
 		return listaCadeira;
 	}
-	
-	
 }

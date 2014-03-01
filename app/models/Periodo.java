@@ -49,34 +49,66 @@ public class Periodo extends Model{
 		}
 	}
 
+	/**
+	 * 
+	 * @return o numero do periodo
+	 */
 	public int getNumero() {
 		return numeroDoPeriodo;
 	}
 
+	/**
+	 * adiciona as cadeiras do primeiro periodo
+	 */
 	private void addCadeiraPrimeiroPeriodo() {
 		cadeiras = GerenciadorDeCadeiras.getCadeirasPrimeiro();
 	}
 
+	/**
+	 * 
+	 * @return uma coleção das cadeiras do periodo
+	 */
 	public Collection<Cadeira> getCadeiras() {
 		return cadeiras.values();
 	}
 
+	/**
+	 * 
+	 * @return mapa de cadeiras do periodo
+	 */
 	public Map<String, Cadeira> getMapCadeiras() {
 		return cadeiras;
 	}
 
+	/**
+	 * 
+	 * @param cadeira
+	 * @return o Objeto Cadeira a partir da String cadeira
+	 */
 	public Cadeira getCadeira(String cadeira) {
 		return cadeiras.get(cadeira);
 	}
 
-	public void addCadeira(Cadeira cadeira) throws Exception {
+	/**
+	 * adiciona uma cadeira ao periodo
+	 * @param cadeira
+	 */
+	public void addCadeira(Cadeira cadeira){
 		cadeiras.put(cadeira.getNome(), cadeira);
 	}
 
+	/**
+	 * Remove uma cadeira do periodo
+	 * @param cadeira
+	 */
 	public void removerCadeira(Cadeira cadeira) {
 		cadeiras.remove(cadeira.getNome());
 	}
-
+	
+	/**
+	 * 
+	 * @return o total da dificuldade do periodo
+	 */
 	public int getDificuldadeTotal() {
 		int dificuldade = 0;
 		for (Cadeira c : getCadeiras()) {
@@ -98,22 +130,42 @@ public class Periodo extends Model{
 		return sum;
 	}
 	
+	/**
+	 * 
+	 * @return id do periodo
+	 */
 	public long getId(){
 		return id;
 	}
 	
+	/**
+	 * seta id do periodo
+	 * @param id
+	 */
 	public void setId(long id){
 		this.id = id;
 	}
 	
+	/**
+	 * salva o periodo no bd
+	 * @param p
+	 */
 	public static void create(Periodo p) {
 		p.save();
 	}
 
+	/**
+	 * deleta um periodo pela sua id
+	 * @param id
+	 */
 	public static void delete(Long id) {
 		find.ref(id).delete();
 	}
 
+	/**
+	 * atualiza o periodo
+	 * @param id
+	 */
 	public static void atualizar(Long id) {
 		Periodo p = find.ref(id);
 		p.update();

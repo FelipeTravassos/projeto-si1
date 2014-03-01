@@ -1,10 +1,11 @@
-import java.util.Map;
+import java.util.Collection;
 
+import managers.GerenciadorDeCadeiras;
 import models.Cadeira;
-import models.Periodo;
 import models.PlanoDeCurso;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -14,189 +15,169 @@ import org.junit.Test;
  * 
  */
 public class PlanoDeCursoTest {
+	private PlanoDeCurso plano;
+	
+	private int PRIMEIRO_PERIODO;
+	private int SEGUNDO_PERIODO;
+	private int TERCEIRO_PERIODO;
+	private int QUARTO_PERIODO;
+	private int QUINTO_PERIODO;
+	private int SETIMO_PERIODO;
 
-	@Test
-	public void testaListarPrimeiroPeriodo() {
-		Periodo periodo = new Periodo(1);
-		Assert.assertEquals(6, periodo.getCadeiras().size());
-		// testar cadeiras
-		// testar creditos
-	}
-
-	@Test
-	public void testaAdicionarCadeira() {
-		PlanoDeCurso plano = new PlanoDeCurso();
-		plano.addPeriodo();
-
-		try {
-			plano.addCadeira("Programação II", 2);
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
-
-		Assert.assertEquals(1, plano.getPeriodo(2).getCadeiras().size());
-	}
-
-//	@Test
-//	public void testaRemoverCadeira() throws Exception {
-//
-//		// teste simples
-//		Cadeira cadeira = new Cadeira("Programação 2", 5);
-//		Periodo periodo = new Periodo(2);
-//
-//		periodo.addCadeira(cadeira);
-//		Assert.assertEquals(1, periodo.getCadeiras().size());
-//
-//		periodo.removerCadeira(cadeira);
-//		Assert.assertEquals(0, periodo.getCadeiras().size());
-//
-//		// teste real
-//		PlanoDeCurso plano = new PlanoDeCurso();
-//		plano.addPeriodo(); // periodo 11
-//		plano.addPeriodo(); // periodo 12
-//		plano.addCadeira("Cálculo II", 2);
-//		plano.addCadeira("Probabilidade e Est.", 3);
-//
-//		Assert.assertEquals(true, plano.isPreRequisito("Cálculo II"));
-//		Assert.assertEquals(8, plano.getMapCadeirasAlocadas().size());
-//		plano.removeCadeira("Cálculo II");
-//
-//		Assert.assertEquals(6, plano.getMapCadeirasAlocadas().size());
-//	}
-
-	@Test
-	public void testaAdicionarPeriodo() {
-		PlanoDeCurso plano = new PlanoDeCurso(); //são add 10 por default
-		plano.addPeriodo(); // add periodo (11º periodo)
-		Assert.assertEquals(11, plano.getPeriodos().size());
-	}
-
-	@Test
-	public void testaCreditosDoPeriodo() throws Exception {
-		PlanoDeCurso plano = new PlanoDeCurso();
-
-		plano.addPeriodo(); // add periodo (2º periodo)
-		plano.addCadeira("Programação II", 2);
-
-		Assert.assertEquals(4, plano.getPeriodo(2).getCreditos());
-	}
-
-//	@Test
-//	public void testaUltrapassarLimiteDeCreditos() throws Exception {
-//		PlanoDeCurso plano = new PlanoDeCurso();
-//		Cadeira cadeira = new Cadeira("Programação 2", 5);
-//		Cadeira cadeira2 = new Cadeira("Calculo 2", 5);
-//		Cadeira cadeira3 = new Cadeira("Linear", 5);
-//		Periodo periodo = new Periodo(2);
-//
-//		plano.addPeriodo(); // add periodo (2º periodo)
-//		cadeira.setCreditos(10);
-//		cadeira2.setCreditos(10);
-//
-//		periodo.addCadeira(cadeira);
-//		periodo.addCadeira(cadeira2);
-//
-//		Assert.assertEquals(20, periodo.getCreditos());
-//
-//		cadeira3.setCreditos(10);
-//		try {
-//			periodo.addCadeira(cadeira3);
-//		} catch (Exception e) {
-//			Assert.assertEquals("Limite de Créditos Ultrapassado",
-//					e.getMessage());
-//		}
-//	}
-
-	@Test
-	public void testaAddCadeiraSemPreRequisitoConcluido() {
-		PlanoDeCurso plano = new PlanoDeCurso();
-
-		plano.addPeriodo(); // add periodo (2º periodo)
-		try {
-			plano.addCadeira("Estrutura de Dados", 2); // cadeira e periodo
-		} catch (Exception e) {
-			Assert.assertEquals("Pre Requisito: Programação II não concluido",
-					e.getMessage());
-		}
-	}
-
-	@Test
-	public void testaRemoverPeriodo() {
-		PlanoDeCurso plano = new PlanoDeCurso();
-		plano.addPeriodo();
-		try {
-			plano.addCadeira("Algebra Linear", 2);
-		} catch (Exception e) {
-			Assert.fail("Não devia ter falhado");
-		}
-		Assert.assertEquals(plano.getMapCadeirasAlocadas().size(), 7);
-		Assert.assertEquals(plano.getMapCadeirasDisponiveis().size(), 48);
-		plano.removePeriodo(2);
-
-		Assert.assertEquals(plano.getMapCadeirasAlocadas().size(), 6);
-		Assert.assertEquals(plano.getMapCadeirasDisponiveis().size(), 49);
-	}
-
-	@Test
-	public void testaDificuldade() {
-		PlanoDeCurso plano = new PlanoDeCurso();
-
-		plano.addPeriodo();
-		try {
-			plano.addCadeira("Algebra Linear", 2); // dificuldade 9
-			Assert.assertEquals(9, plano.getPeriodo(2).getDificuldadeTotal());
-
-			plano.addCadeira("Cálculo II", 2); // dificuldade 7
-			Assert.assertEquals(16, plano.getPeriodo(2).getDificuldadeTotal());
-		} catch (Exception e) {
-
-			Assert.fail(e.getMessage());
-		}
-
-	}
-
-	@Test
-	public void testaAddCadeiraComPreRequisitoEmPeriodoPosterior() {
-		PlanoDeCurso plano = new PlanoDeCurso();
-		plano.addPeriodo(); // periodo 2
-		plano.addPeriodo(); // periodo 3
-
-		try {
-			plano.addCadeira("Cálculo II", 3);
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}
-
-		try {
-			plano.addCadeira("Probabilidade e Est.", 2);
-			Assert.fail("Devia ter falhado");
-			// cálculo 2 é seu pre-requisito
-		} catch (Exception e) {
-			Assert.assertEquals("Pre Requisito: Cálculo II não concluido",
-					e.getMessage());
-		}
+	
+	@Before
+	public void start(){
+		plano = new PlanoDeCurso();
+		
+		PRIMEIRO_PERIODO = 1;
+		SEGUNDO_PERIODO = 2;
+		TERCEIRO_PERIODO = 3;
+		QUARTO_PERIODO = 4;
+		QUINTO_PERIODO = 5;
+		SETIMO_PERIODO = 7;
 	}
 	
 	@Test
-	public void testaGetPeriodoCadeira(){
-		PlanoDeCurso pc = new PlanoDeCurso();
-		Map<String, Cadeira> mapa = pc.mapaDeCadeiras;
+	public void deveVerificarSePeriodosEstaAlocadosCorretamente(){
+		Collection<Cadeira> listaDisciplinaPrimeiroPeriodo = plano.getPeriodo(PRIMEIRO_PERIODO).getCadeiras();
+		String toStringPrimeiroPeriodo = "[Nome = Int. à Computacação, ID = 0, Periodo = 1, Creditos = 4, "
+										+ "Nome = Programação I, ID = 0, Periodo = 1, Creditos = 4, "
+										+ "Nome = Lab. de Programação I, ID = 0, Periodo = 1, Creditos = 4, "
+										+ "Nome = Leitura e Prod. de Textos, ID = 0, Periodo = 1, Creditos = 4, "
+										+ "Nome = Algebra Vetorial, ID = 0, Periodo = 1, Creditos = 4, "
+										+ "Nome = Cáĺculo I , ID = 0, Periodo = 1, Creditos = 4]";
+		Assert.assertEquals(toStringPrimeiroPeriodo, listaDisciplinaPrimeiroPeriodo.toString());
 		
-		Cadeira eda = mapa.get("Estrutura de Dados");
-		Cadeira p1 = mapa.get("Programação I");
-		Cadeira metodos = mapa.get("Métodos Estatísticos");
-		Cadeira logica = mapa.get("Lógica Matemática");
-		Cadeira ia = mapa.get("Inteligência Artificial I");
 		
-		Assert.assertEquals(3, eda.getPeriodo());
-		Assert.assertEquals(1, p1.getPeriodo());
-		Assert.assertEquals(4, metodos.getPeriodo());
-		Assert.assertEquals(4, logica.getPeriodo());
-		Assert.assertEquals(6, ia.getPeriodo());
+		Collection<Cadeira> listaDisciplinaSegundoPeriodo = plano.getPeriodo(SEGUNDO_PERIODO).getCadeiras();
+		String toStringSegundoPeriodo = "[Nome = Teoria dos Grafos, ID = 0, Periodo = 2, Creditos = 2, "
+										+ "Nome = Programação II, ID = 0, Periodo = 2, Creditos = 4, "
+										+ "Nome = Cálculo II, ID = 0, Periodo = 2, Creditos = 4, "
+										+ "Nome = Matemática Discreta, ID = 0, Periodo = 2, Creditos = 4, "
+										+ "Nome = Fund. de Física Clássica, ID = 0, Periodo = 2, Creditos = 4, "
+										+ "Nome = Lab. de Programação II, ID = 0, Periodo = 2, Creditos = 4, "
+										+ "Nome = Metodologia Científica, ID = 0, Periodo = 2, Creditos = 4]";
+		Assert.assertEquals(toStringSegundoPeriodo, listaDisciplinaSegundoPeriodo.toString());
 		
-		for(Cadeira c : pc.mapaDeCadeiras.values()){
-			System.out.println(c.getNome());
-		}
+		
+		Collection<Cadeira> listaDisciplinaTerceiroPeriodo = plano.getPeriodo(TERCEIRO_PERIODO).getCadeiras();
+		String toStringTerceiroPeriodo = "[Nome = Algebra Linear, ID = 0, Periodo = 3, Creditos = 4, "
+										+ "Nome = Teoria da Computação, ID = 0, Periodo = 3, Creditos = 4, "
+										+ "Nome = Lab. de Estrutura de Dados, ID = 0, Periodo = 3, Creditos = 4, "
+										+ "Nome = Estrutura de Dados, ID = 0, Periodo = 3, Creditos = 4, "
+										+ "Nome = Probabilidade e Est., ID = 0, Periodo = 3, Creditos = 4, "
+										+ "Nome = Gerência da Informação, ID = 0, Periodo = 3, Creditos = 4, "
+										+ "Nome = Fund. de Física Moderna, ID = 0, Periodo = 3, Creditos = 4]";
+		Assert.assertEquals(toStringTerceiroPeriodo, listaDisciplinaTerceiroPeriodo.toString());
 
+		
+		Collection<Cadeira> listaDisciplinaQuartoPeriodo = plano.getPeriodo(QUARTO_PERIODO).getCadeiras();
+		String toStringQuartoPeriodo = "[Nome = Paradigmas de Linguagens de Programação, ID = 0, Periodo = 4, Creditos = 2, "
+										+ "Nome = Lógica Matemática, ID = 0, Periodo = 4, Creditos = 4, "
+										+ "Nome = Métodos Estatísticos, ID = 0, Periodo = 4, Creditos = 4, "
+										+ "Nome = Sistemas de Informação I, ID = 0, Periodo = 4, Creditos = 4, "
+										+ "Nome = Lab. de Org. e Arquitetura de Computadores, ID = 0, Periodo = 4, Creditos = 4, "
+										+ "Nome = Org. e Arquitetura de Computadores I, ID = 0, Periodo = 4, Creditos = 4, "
+										+ "Nome = Engenharia de Software I, ID = 0, Periodo = 4, Creditos = 4]";
+		Assert.assertEquals(toStringQuartoPeriodo, listaDisciplinaQuartoPeriodo.toString());
+
+		
+		
+		
+		Collection<Cadeira> listaDisciplinaQuintoPeriodo = plano.getPeriodo(QUINTO_PERIODO).getCadeiras();
+		String toStringQuintoPeriodo = "[Nome = Laboratório de Engenharia de Software, ID = 0, Periodo = 5, Creditos = 4, "
+										+ "Nome = Análise e Técnicas de Algoritmos, ID = 0, Periodo = 5, Creditos = 4, "
+										+ "Nome = Banco de Dados I, ID = 0, Periodo = 5, Creditos = 4, "
+										+ "Nome = Redes de Computadores, ID = 0, Periodo = 5, Creditos = 4, "
+										+ "Nome = Compiladores, ID = 0, Periodo = 5, Creditos = 4, "
+										+ "Nome = Sistemas de Informação II, ID = 0, Periodo = 5, Creditos = 4, "
+										+ "Nome = Informática e Sociedade, ID = 0, Periodo = 5, Creditos = 2]";
+		Assert.assertEquals(toStringQuintoPeriodo, listaDisciplinaQuintoPeriodo.toString());
+	}
+	
+
+	@Test
+	public void deveAtualizarQuantidadeCreditos() {
+		Assert.assertEquals(12, plano.getPeriodo(SETIMO_PERIODO).getCreditos());
+		try {
+			plano.addCadeira("Optativa 1", SETIMO_PERIODO);
+			plano.addCadeira("Optativa 2", SETIMO_PERIODO);
+			plano.addCadeira("Optativa 3", SETIMO_PERIODO);
+
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+		Assert.assertEquals(24, plano.getPeriodo(SETIMO_PERIODO).getCreditos());
+		
+		try {
+			plano.removeCadeira("Optativa 1");
+			plano.removeCadeira("Optativa 2");
+			plano.removeCadeira("Optativa 3");
+
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+		Assert.assertEquals(12, plano.getPeriodo(SETIMO_PERIODO).getCreditos());
+	}
+
+	@Test
+	public void deveCriarNovoPeriodoAdicionarCadeirasVerificar() {
+		int DECIMO_PRIMEIRO_PERIODO = 11;
+		plano.addPeriodo(); // add periodo (11º periodo)
+		
+		Assert.assertEquals(DECIMO_PRIMEIRO_PERIODO, plano.getPeriodos().size());
+		Assert.assertEquals(0, plano.getPeriodo(DECIMO_PRIMEIRO_PERIODO).getCreditos());
+		
+		try {
+			plano.addCadeira("Optativa 1", DECIMO_PRIMEIRO_PERIODO);
+			plano.addCadeira("Optativa 2", DECIMO_PRIMEIRO_PERIODO);
+			plano.addCadeira("Optativa 3", DECIMO_PRIMEIRO_PERIODO);
+
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+		Assert.assertEquals(12, plano.getPeriodo(DECIMO_PRIMEIRO_PERIODO).getCreditos());
+	}
+
+	@Test
+	public void verificaDificuldadeDoPeriodo() {
+		int somaDificuldades = 0;
+		
+		//Verifica Dificuldade do Primeiro Periodo
+		for(Cadeira c : GerenciadorDeCadeiras.getCadeirasPrimeiro().values()){
+				somaDificuldades += c.getDificuldade();			
+		}
+		Assert.assertEquals(somaDificuldades, plano.getPeriodo(PRIMEIRO_PERIODO).getDificuldadeTotal());
+
+		somaDificuldades = 0;
+		
+		//Verifica Dificuldade do Segundo Periodo
+		for(Cadeira c : GerenciadorDeCadeiras.getMapaDeCadeiras().values()){
+			if(c.getPeriodo() == SEGUNDO_PERIODO){
+				somaDificuldades += c.getDificuldade();
+			}
+		}
+		Assert.assertEquals(somaDificuldades, plano.getPeriodo(SEGUNDO_PERIODO).getDificuldadeTotal());
+
+		somaDificuldades = 0; 
+		
+		//Verifica Dificuldade do Terceiro Periodo
+		for(Cadeira c : GerenciadorDeCadeiras.getMapaDeCadeiras().values()){
+			if(c.getPeriodo() == TERCEIRO_PERIODO){
+				somaDificuldades += c.getDificuldade();
+			}
+		}
+		Assert.assertEquals(somaDificuldades, plano.getPeriodo(TERCEIRO_PERIODO).getDificuldadeTotal());
+		
+		
+		somaDificuldades = 0; 
+		
+		//Verifica Dificuldade do Quarto Periodo
+		for(Cadeira c : GerenciadorDeCadeiras.getMapaDeCadeiras().values()){
+			if(c.getPeriodo() == QUARTO_PERIODO){
+				somaDificuldades += c.getDificuldade();
+			}
+		}
+		Assert.assertEquals(somaDificuldades, plano.getPeriodo(QUARTO_PERIODO).getDificuldadeTotal());
 	}
 }

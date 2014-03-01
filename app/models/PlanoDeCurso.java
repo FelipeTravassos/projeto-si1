@@ -47,6 +47,11 @@ public class PlanoDeCurso extends Model{
 	
 	public Map<String, Cadeira> mapaDeCadeiras;
 	public List<String> listaOptativa;
+	
+	/**
+	 * Construtor do plano de curso
+	 * inicializa os periodos e aloca as disciplinas que devem estar na grade alocada
+	 */
 	public PlanoDeCurso() { 
 		/* 
 		 * Responsabilidade Atribuita seguindo o padrão Creator
@@ -76,7 +81,9 @@ public class PlanoDeCurso extends Model{
 		this.listaOptativa = lista;
 	}
 	
-
+	/**
+	 * Distribui as cadeiras nos seus períodos respectivos (blocka o curso)
+	 */
 	public void distribuiCadeiras(){
 		for(Cadeira c: mapaDeCadeiras.values()){
 				Periodo p = getPeriodo(c.getPeriodo());
@@ -92,6 +99,10 @@ public class PlanoDeCurso extends Model{
 		}
 	}
 
+	/**
+	 * Distribui cadeiras no periodo que foram recebidas por uma lista de cadeiras
+	 * @param cadeiras
+	 */
 	public void distribuiCadeiras(List<Cadeira> cadeiras){
 		Map<String, Cadeira> mapa = new HashMap<String, Cadeira>();
 		for(Cadeira c: cadeiras){
@@ -121,6 +132,10 @@ public class PlanoDeCurso extends Model{
 		return this.periodos.get(numPeriodo - 1);
 	}
 
+	/**
+	 * 
+	 * @return lista com todos os periodos
+	 */
 	public List<Periodo> getPeriodos() {
 		return this.periodos;
 	}
@@ -220,6 +235,11 @@ public class PlanoDeCurso extends Model{
 		this.periodos = periodos.subList(0, periodo - 1);
 	}
 
+	/**
+	 * Remove uma cadeira a partir de seu nome
+	 * @param cadeira
+	 * @throws Exception
+	 */
 	public void removeCadeira(String cadeira) throws Exception {
 		/*
 		 * PADRÃO DE PROJETO: CONTROLLER - para manter o baixo acoplamento
@@ -266,22 +286,42 @@ public class PlanoDeCurso extends Model{
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @return id do plano de curso
+	 */
 	public long getId(){
 		return this.id;
 	}
 	
+	/**
+	 * seta id do plano de curso
+	 * @param id
+	 */
 	public void setId(long id){
 		this.id = id;
 	}
 	
+	/**
+	 * salva um plano de curso no bd
+	 * @param plano
+	 */
 	public static void create(PlanoDeCurso plano) {
 		plano.save();
 	}
 
+	/**
+	 * deleta um plano de curso pela sua id
+	 * @param id
+	 */
 	public static void delete(Long id) {
 		find.ref(id).delete();
 	}
 
+	/**
+	 * atualiza o plano de curso
+	 * @param id
+	 */
 	public static void atualizar(Long id) {
 		PlanoDeCurso plano = find.ref(id);
 		plano.update();
